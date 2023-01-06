@@ -10,6 +10,7 @@ var SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
 
 function createCompareFactory( font, treat, control ) {
   return function() {
+    if (!document) return true
     var a = Han.localize.writeOnCanvas( treat, font )
     var b = Han.localize.writeOnCanvas( control, font )
     return Han.localize.compareCanvases( a, b )
@@ -39,7 +40,7 @@ function createSubstFactory( regexToSubst ) {
       .replace(
         new RegExp( pattern[ 0 ], 'ig' ),
         function( portion, match ) {
-          var ret = $.clone( charCombLiga )
+          var ret = charCombLiga()
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
@@ -53,7 +54,7 @@ function createSubstFactory( regexToSubst ) {
   }
 }
 
-var charCombLiga = $.create( 'h-char', 'comb-liga' )
+var charCombLiga = function () { return $.create( 'h-char', 'comb-liga' ) }
 
 $.extend( Han, {
   isVowelCombLigaNormal:   isVowelCombLigaNormal(),

@@ -139,7 +139,7 @@ function renderComplexRuby( $ruby ) {
 
         if ( rbspan < span ) {
           if ( aRb.length > 1 ) {
-            console.error( 'An impossible `rbspan` value detected.', ruby )
+            console.error( 'An impossible `rbspan` value detected.', $ruby )
             return
           }
           aRb  = $.tag( 'rb', aRb[0] )

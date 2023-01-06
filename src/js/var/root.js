@@ -1,3 +1,3 @@
 define(function() {
-  return document.documentElement
+  return document && document.documentElement
 })

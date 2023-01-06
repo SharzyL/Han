@@ -6,9 +6,12 @@ define([
 
 var hws = '<<hws>>'
 
-var $hws = $.create( 'h-hws' )
-$hws.setAttribute( 'hidden', '' )
-$hws.innerHTML = ' '
+var $hws = function() {
+  var ret = $.create( 'h-hws' )
+  ret.setAttribute( 'hidden', '' )
+  ret.innerHTML = ' '
+  return ret
+}
 
 function sharingSameParent( $a, $b ) {
   return $a && $b && $a.parentNode === $b.parentNode
@@ -47,7 +50,7 @@ function firstStepLabel( portion, mat ) {
 
 function real$hwsElmt( portion ) {
   return portion.index === 0
-    ? $.clone( $hws )
+    ? $hws()
     : ''
 }
 

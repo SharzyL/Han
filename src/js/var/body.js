@@ -1,3 +1,3 @@
 define(function() {
-  return document.body
+  return document && document.body
 })

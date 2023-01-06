@@ -4,7 +4,7 @@ define([
   './locale'
 ], function( root, Han ) {
 
-window.addEventListener( 'DOMContentLoaded', function() {
+document && window.addEventListener( 'DOMContentLoaded', function() {
   var initContext
 
   // Use the shortcut under the default situation

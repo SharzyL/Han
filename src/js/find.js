@@ -7,6 +7,7 @@ define([
 ], function( Han, $, UNICODE, TYPESET, Fibre ) {
 
 var isNodeNormalizeNormal = (function() {
+    if (!document) return true
     //// Disabled `Node.normalize()` for temp due to
     //// issue below in IE11.
     //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol

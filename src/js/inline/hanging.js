@@ -11,6 +11,8 @@ var HANGABLE_CS_HTML = '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>
 var matches = Han.find.matches
 
 function detectSpaceFont() {
+  if (!document) return false
+
   var div = $.create( 'div' )
   var ret
 

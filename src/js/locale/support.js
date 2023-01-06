@@ -12,9 +12,10 @@ Locale.support = (function() {
 
   // Create an element for feature detecting
   // (in `testCSSProp`)
-  var elem = $.create( 'h-test' )
+  var elem = document && $.create( 'h-test' )
 
   function testCSSProp( prop ) {
+    if (!document) return true;
     var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1)
     var allProp = ( prop + ' ' + PREFIX.join( ucProp + ' ' ) + ucProp ).split(' ')
     var ret
@@ -75,6 +76,7 @@ Locale.support = (function() {
     columnwidth: testCSSProp( 'columnWidth' ),
 
     fontface: (function() {
+      if (!document) return true;
       var ret
 
       injectElementWithStyle(
@@ -96,6 +98,7 @@ Locale.support = (function() {
     })(),
 
     ruby: (function() {
+      if (!document) return true;
       var ruby = $.create( 'ruby' )
       var rt = $.create( 'rt' )
       var rp = $.create( 'rp' )
@@ -123,6 +126,7 @@ Locale.support = (function() {
     })(),
 
     'ruby-display': (function() {
+      if (!document) return true;
       var div = $.create( 'div' )
 
       div.innerHTML = '<h-test-a style="display: ruby;"></h-test-a><h-test-b style="display: ruby-text-container;"></h-test-b>'
@@ -130,6 +134,7 @@ Locale.support = (function() {
     })(),
 
     'ruby-interchar': (function() {
+      if (!document) return true;
       var IC = 'inter-character'
       var div = $.create( 'div' )
       var css
@@ -145,6 +150,7 @@ Locale.support = (function() {
     // detecting whether it's Arial (supported) or
     // Times New Roman (not supported).
     unicoderange: (function() {
+      if (!document) return true;
       var ret
 
       injectElementWithStyle(

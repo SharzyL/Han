@@ -66,6 +66,7 @@ function compareCanvases( treat, control ) {
 }
 
 function detectFont( treat, control, text ) {
+  if (!document) return true
   var treat = treat
   var control = control || 'sans-serif'
   var text = text || '辭Q'

@@ -85,7 +85,7 @@ gulp.task \dev     <[ build watch server ]>
 gulp.task \build   <[ dist:css dist:js dist:font ]>
 gulp.task \demo    <[ build demo:lsc demo:styl demo:jade ]>
 gulp.task \asset   <[ dist:font ]>
-gulp.task \dep     <[ normalize.css fibre.js ]>
+gulp.task \dep     <[ normalize.css ]>
 
 gulp.task \server !->
   gulp-connect.server {
@@ -127,7 +127,7 @@ gulp.task \dist:cssmin <[ dist:styl ]> ->
     .pipe gulp.dest \./dist
     .pipe gulp.dest \./demo
 
-gulp.task \dist:amd <[ fibre.js ]> ->
+gulp.task \dist:amd ->
   gulp-src \./src/js/han.js
     .pipe rjs rjs-config
     .pipe concat \han.js, {
@@ -201,9 +201,4 @@ gulp.task \normalize.css ->
     .pipe gulp.dest \./src/styl/locale
     .pipe concat \_normalize.scss
     .pipe gulp.dest \./src/sass/locale
-
-gulp.task \fibre.js ->
-  gulp-src \./node_modules/fibre.js/dist/fibre.js
-    .pipe concat \index.js
-    .pipe gulp.dest \./src/lib/fibre.js
 

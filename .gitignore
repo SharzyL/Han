@@ -10,5 +10,3 @@ demo/*.js
 demo/*.css
 demo/font
 test/*.js
-
-src/lib
