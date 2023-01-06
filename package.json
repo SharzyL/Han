@@ -54,7 +54,7 @@
     "gulp-util": "^3.0.7",
     "gulp-watch": "^5.0.1",
     "livescript": "~1.6.0",
-    "qunitjs": "^2.4.1",
+    "qunit": "^2.19.3",
     "requirejs": "^2.1.15"
   },
   "resolutions": {

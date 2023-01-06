@@ -4,3 +4,11 @@ node_modules
 TODO
 dist
 *.vfbak
+
+demo/*.html
+demo/*.js
+demo/*.css
+demo/font
+test/*.js
+
+src/lib
