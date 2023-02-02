@@ -1,163 +1,159 @@
-define([
-  '../var/document',
-  '../core',
-  '../method',
-  '../regex'
-], function( document, Han, $ ) {
+import { writeOnCanvas, compareCanvases } from "../locale/detect-font";
+import { Finder } from "../find";
+import { TYPESET } from "../regex";
+import $ from "../method"
 
-var QUERY_RU_W_ANNO    = 'h-ru[annotation]'
-var SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
+const SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
 
-function createCompareFactory( font, treat, control ) {
-  return function() {
+function createCompareFactory(font, treat, control) {
+  return function () {
     if (!document) return true
-    var a = Han.localize.writeOnCanvas( treat, font )
-    var b = Han.localize.writeOnCanvas( control, font )
-    return Han.localize.compareCanvases( a, b )
+    var a = writeOnCanvas(treat, font)
+    var b = writeOnCanvas(control, font)
+    return compareCanvases(a, b)
   }
 }
 
-function isVowelCombLigaNormal() {
-  return createCompareFactory( '"Romanization Sans"', '\u0061\u030D', '\uDB80\uDC61' )
+export function isVowelCombLigaNormal() {
+  return createCompareFactory('"Romanization Sans"', '\u0061\u030D', '\uDB80\uDC61')
 }
 
-function isVowelICombLigaNormal() {
-  return createCompareFactory( '"Romanization Sans"', '\u0069\u030D', '\uDB80\uDC69' )
+export function isVowelICombLigaNormal() {
+  return createCompareFactory('"Romanization Sans"', '\u0069\u030D', '\uDB80\uDC69')
 }
 
-function isZhuyinCombLigaNormal() {
-  return createCompareFactory( '"Zhuyin Kaiti"', '\u31B4\u0307', '\uDB8C\uDDB4' )
+export function isZhuyinCombLigaNormal() {
+  return createCompareFactory('"Zhuyin Kaiti"', '\u31B4\u0307', '\uDB8C\uDDB4')
 }
 
-function createSubstFactory( regexToSubst ) {
-  return function( context ) {
-    var context = context || document
-    var finder  = Han.find( context ).avoid( SELECTOR_TO_IGNORE )
+function createSubstFactory(regexToSubst) {
+  return function (context) {
+    context = context || document
+    const finder = new Finder(context).avoid(SELECTOR_TO_IGNORE)
 
     regexToSubst
-    .forEach(function( pattern ) {
-      finder
-      .replace(
-        new RegExp( pattern[ 0 ], 'ig' ),
-        function( portion, match ) {
-          var ret = charCombLiga()
+      .forEach(function (pattern) {
+        finder
+          .replace(
+            new RegExp(pattern[0], 'ig'),
+            function (portion, match) {
+              const ret = charCombLiga()
 
-          // Put the original content in an inner container
-          // for better presentational effect of hidden text
-          ret.innerHTML = '<h-inner>' + match[0] + '</h-inner>'
-          ret.setAttribute( 'display-as', pattern[ 1 ] )
-          return portion.index === 0 ? ret : ''
-        }
-      )
-    })
+              // Put the original content in an inner container
+              // for better presentational effect of hidden text
+              ret.innerHTML = '<h-inner>' + match[0] + '</h-inner>'
+              ret.setAttribute('display-as', pattern[1])
+              return portion.index === 0 ? ret : ''
+            }
+          )
+      })
     return finder
   }
 }
 
-var charCombLiga = function () { return $.create( 'h-char', 'comb-liga' ) }
+function charCombLiga() {
+  return $.create('h-char', 'comb-liga')
+}
 
-$.extend( Han, {
-  isVowelCombLigaNormal:   isVowelCombLigaNormal(),
-  isVowelICombLigaNormal:  isVowelICombLigaNormal(),
-  isZhuyinCombLigaNormal:  isZhuyinCombLigaNormal(),
+export const substVowelCombLiga = createSubstFactory(TYPESET['display-as']['comb-liga-vowel'])
+export const substVowelICombLiga = createSubstFactory(TYPESET['display-as']['comb-liga-vowel-i'])
+export const substZhuyinCombLiga = createSubstFactory(TYPESET['display-as']['comb-liga-zhuyin'])
+export const substCombLigaWithPUA = createSubstFactory(TYPESET['display-as']['comb-liga-pua'])
 
-  isCombLigaNormal:        isVowelICombLigaNormal()(),  // ### Deprecated
+export function substInaccurateChar(context) {
+  context = context || document
+  const finder = new Finder(context)
 
-  substVowelCombLiga:   createSubstFactory( Han.TYPESET[ 'display-as' ][ 'comb-liga-vowel' ] ),
-  substZhuyinCombLiga:  createSubstFactory( Han.TYPESET[ 'display-as' ][ 'comb-liga-zhuyin' ] ),
-  substCombLigaWithPUA: createSubstFactory( Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ] ),
+  finder.avoid(SELECTOR_TO_IGNORE)
 
-  substInaccurateChar: function( context ) {
-    var context = context || document
-    var finder = Han.find( context )
-
-    finder.avoid( SELECTOR_TO_IGNORE )
-
-    Han.TYPESET[ 'inaccurate-char' ]
-    .forEach(function( pattern ) {
+  return TYPESET['inaccurate-char']
+    .forEach(pattern =>
       finder
-      .replace(
-        new RegExp( pattern[ 0 ], 'ig' ),
-        pattern[ 1 ]
-      )
-    })
-  }
-})
+        .replace(
+          new RegExp(pattern[0], 'ig'),
+          pattern[1]
+        )
+    )
+}
 
-$.extend( Han.fn, {
-  'comb-liga-vowel':   null,
+export const subst = {
+  'comb-liga-vowel': null,
   'comb-liga-vowel-i': null,
-  'comb-liga-zhuyin':  null,
-  'inaccurate-char':   null,
+  'comb-liga-zhuyin': null,
+  'inaccurate-char': null,
 
-  substVowelCombLiga: function() {
-    this['comb-liga-vowel'] = Han.substVowelCombLiga( this.context )
+  substVowelCombLiga: function () {
+    this['comb-liga-vowel'] = substVowelCombLiga(this.context)
     return this
   },
 
-  substVowelICombLiga: function() {
-    this['comb-liga-vowel-i'] = Han.substVowelICombLiga( this.context )
+  substVowelICombLiga: function () {
+    this['comb-liga-vowel-i'] = substVowelICombLiga(this.context)
     return this
   },
 
-  substZhuyinCombLiga: function() {
-    this['comb-liga-zhuyin'] = Han.substZhuyinCombLiga( this.context )
+  substZhuyinCombLiga: function () {
+    this['comb-liga-zhuyin'] = substZhuyinCombLiga(this.context)
     return this
   },
 
-  substCombLigaWithPUA: function() {
-    if ( !Han.isVowelCombLigaNormal()) {
-      this['comb-liga-vowel'] = Han.substVowelCombLiga( this.context )
-    } else if ( !Han.isVowelICombLigaNormal()) {
-      this['comb-liga-vowel-i'] = Han.substVowelICombLiga( this.context )
+  substCombLigaWithPUA: function () {
+    if (!isVowelCombLigaNormal()) {
+      this['comb-liga-vowel'] = substVowelCombLiga(this.context)
+    } else if (!isVowelICombLigaNormal()) {
+      this['comb-liga-vowel-i'] = substVowelICombLiga(this.context)
     }
 
-    if ( !Han.isZhuyinCombLigaNormal()) {
-      this['comb-liga-zhuyin'] = Han.substZhuyinCombLiga( this.context )
+    if (!isZhuyinCombLigaNormal()) {
+      this['comb-liga-zhuyin'] = substZhuyinCombLiga(this.context)
     }
     return this
   },
 
-  revertVowelCombLiga: function() {
+  revertVowelCombLiga: function () {
     try {
-      this['comb-liga-vowel'].revert( 'all' )
-    } catch (e) {}
+      this['comb-liga-vowel'].revert('all')
+    } catch (e) {
+    }
     return this
   },
 
-  revertVowelICombLiga: function() {
+  revertVowelICombLiga: function () {
     try {
-      this['comb-liga-vowel-i'].revert( 'all' )
-    } catch (e) {}
+      this['comb-liga-vowel-i'].revert('all')
+    } catch (e) {
+    }
     return this
   },
 
-  revertZhuyinCombLiga: function() {
+  revertZhuyinCombLiga: function () {
     try {
-      this['comb-liga-zhuyin'].revert( 'all' )
-    } catch (e) {}
+      this['comb-liga-zhuyin'].revert('all')
+    } catch (e) {
+    }
     return this
   },
 
-  revertCombLigaWithPUA: function() {
+  revertCombLigaWithPUA: function () {
     try {
-      this['comb-liga-vowel'].revert( 'all' )
-      this['comb-liga-vowel-i'].revert( 'all' )
-      this['comb-liga-zhuyin'].revert( 'all' )
-    } catch (e) {}
+      this['comb-liga-vowel'].revert('all')
+      this['comb-liga-vowel-i'].revert('all')
+      this['comb-liga-zhuyin'].revert('all')
+    } catch (e) {
+    }
     return this
   },
 
-  substInaccurateChar: function() {
-    this['inaccurate-char'] = Han.substInaccurateChar( this.context )
+  substInaccurateChar: function () {
+    this['inaccurate-char'] = substInaccurateChar(this.context)
     return this
   },
 
-  revertInaccurateChar: function() {
+  revertInaccurateChar: function () {
     try {
-      this['inaccurate-char'].revert( 'all' )
-    } catch (e) {}
+      this['inaccurate-char'].revert('all')
+    } catch (e) {
+    }
     return this
   }
-})
-})
+}

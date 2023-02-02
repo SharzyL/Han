@@ -1,3 +1,3 @@
+import Han from "./src/js/core";
 
-module.exports = require( './dist/han' )
-
+export default Han

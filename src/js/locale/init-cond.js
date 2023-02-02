@@ -1,21 +1,16 @@
-define([
-  '../var/root',
-  './core'
-], function( root, Locale ) {
+import support from "./support";
+import { root } from "../vars";
 
-Locale.initCond = function( target ) {
-  var target = target || root
-  var ret = ''
-  var clazz
+export function initCond(target) {
+  target = target || root
+  let ret = ''
 
-  for ( var feature in Locale.support ) {
-    clazz = ( Locale.support[ feature ] ? '' : 'no-' ) + feature
+  for (const feature in support) {
+    const clazz = (support[feature] ? '' : 'no-') + feature
 
-    target.classList.add( clazz )
+    target.classList.add(clazz)
     ret += clazz + ' '
   }
+
   return ret
 }
-
-return Locale
-})

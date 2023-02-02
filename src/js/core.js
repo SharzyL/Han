@@ -1,12 +1,15 @@
-define([
-  './var/document',
-  './var/root',
-  './var/body'
-], function( document, root, body ) {
+import { root, body } from "./vars"
+import { renderHanging } from "./inline/hanging";
+import { correctBiaodian } from "./typography/biaodian";
+import { renderJiya, revertJiya } from "./inline/jiya";
+import { initCond } from "./locale/init-cond";
+import { renderElem } from "./locale/normalize";
+import { renderHWS, renderHWSStrict } from "./inline/hws";
+import { substCombLigaWithPUA } from "./inline/subst";
 
-var VERSION = '@VERSION'
+const VERSION = '@VERSION'
 
-var ROUTINE = [
+const defaultRoutine = [
   // Initialise the condition with feature-detecting
   // classes (Modernizr-alike), binding onto the root
   // element, possibly `<html>`.
@@ -34,85 +37,45 @@ var ROUTINE = [
   /* 'substInaccurateChar', */
 ]
 
-// Define Han
-var Han = function( context, condition ) {
-  return new Han.fn.init( context, condition )
-}
+export default class Han {
+  static version = VERSION
 
-var init = function() {
-  if ( arguments[ 0 ] ) {
-    this.context = arguments[ 0 ]
+  static allSteps = {
+    initCond,
+    renderElem,
+    renderJiya, revertJiya,
+    renderHanging,
+    correctBiaodian,
+    renderHWS, renderHWSStrict,
+    substCombLigaWithPUA
   }
-  if ( arguments[ 1 ] ) {
-    this.condition = arguments[ 1 ]
+
+  constructor(context, condition) {
+    this.context = context || body
+    this.condition = condition || root
+    this.routine = defaultRoutine
   }
-  return this
-}
 
-Han.version = VERSION
-
-Han.fn = Han.prototype = {
-  version: VERSION,
-
-  constructor: Han,
-
-  // Body as the default target context
-  context: body,
-
-  // Root element as the default condition
-  condition: root,
-
-  // Default rendering routine
-  routine: ROUTINE,
-
-  init: init,
-
-  setRoutine: function( routine ) {
-    if ( Array.isArray( routine )) {
+  setRoutine(routine) {
+    if (Array.isArray(routine)) {
       this.routine = routine
     }
     return this
-  },
+  }
 
   // Note that the routine set up here will execute
   // only once. The method won't alter the routine in
   // the instance or in the prototype chain.
-  render: function( routine ) {
-    var it = this
-    var routine = Array.isArray( routine )
-      ? routine
-      : this.routine
-
-    routine
-    .forEach(function( method ) {
-      if (
-         typeof method === 'string' &&
-         typeof it[ method ] === 'function'
-      ) {
-        it[ method ]()
-      } else if (
-        Array.isArray( method ) &&
-        typeof it[ method[0] ] === 'function'
-      ) {
-        it[ method.shift() ].apply( it, method )
+  render(routine) {
+    this.condition.classList.add('han-js-rendered');
+    (routine || this.routine).forEach(method => {
+      const step = Han.allSteps[method]
+      if (step === undefined) {
+        console.error(`cannot find step of name '${method}'`)
+      } else {
+        step(this.context)
       }
     })
     return this
   }
 }
-
-Han.fn.init.prototype = Han.fn
-
-/**
- * Shortcut for `render()` under the default
- * situation.
- *
- * Once initialised, replace `Han.init` with the
- * instance for future usage.
- */
-Han.init = function() {
-  return Han.init = Han().render()
-}
-
-return Han
-})

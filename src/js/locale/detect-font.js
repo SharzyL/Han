@@ -1,54 +1,51 @@
-define([
-  '../var/body',
-  '../method',
-  './core'
-], function( body, $, Locale ) {
+import { document, body } from "../vars";
+import $ from "../method"
 
-function writeOnCanvas( text, font ) {
-  var canvas = $.create( 'canvas' )
-  var context
+export function writeOnCanvas(text, font) {
+  const canvas = $.create('canvas')
+  let context
 
   canvas.width = '50'
   canvas.height = '20'
   canvas.style.display = 'none'
 
-  body.appendChild( canvas )
+  body.appendChild(canvas)
 
-  context = canvas.getContext( '2d' )
+  context = canvas.getContext('2d')
   context.textBaseline = 'top'
   context.font = '15px ' + font + ', sans-serif'
   context.fillStyle = 'black'
   context.strokeStyle = 'black'
-  context.fillText( text, 0, 0 )
+  context.fillText(text, 0, 0)
 
   return {
     node: canvas,
     context: context,
-    remove: function() {
-      $.remove( canvas, body )
+    remove: function () {
+      $.remove(canvas, body)
     }
   }
 }
 
-function compareCanvases( treat, control ) {
-  var ret
-  var a = treat.context
-  var b = control.context
+export function compareCanvases(treat, control) {
+  let ret
+  const a = treat.context
+  const b = control.context
 
   try {
-    for ( var j = 1; j <= 20; j++ ) {
-      for ( var i = 1; i <= 50; i++ ) {
+    for (let j = 1; j <= 20; j++) {
+      for (let i = 1; i <= 50; i++) {
         if (
           typeof ret === 'undefined' &&
           a.getImageData(i, j, 1, 1).data[3] !== b.getImageData(i, j, 1, 1).data[3]
         ) {
           ret = false
           break
-        } else if ( typeof ret === 'boolean' ) {
+        } else if (typeof ret === 'boolean') {
           break
         }
 
-        if ( i === 50 && j === 20 && typeof ret === 'undefined' ) {
+        if (i === 50 && j === 20 && typeof ret === 'undefined') {
           ret = true
         }
       }
@@ -61,26 +58,18 @@ function compareCanvases( treat, control ) {
     control = null
 
     return ret
-  } catch (e) {}
+  } catch (e) {
+  }
   return false
 }
 
-function detectFont( treat, control, text ) {
+export function detectFont(treat, control, text) {
   if (!document) return true
-  var treat = treat
-  var control = control || 'sans-serif'
-  var text = text || '辭Q'
-  var ret
+  control = control || 'sans-serif'
+  text = text || '辭Q'
 
-  control = writeOnCanvas( text, control )
-  treat = writeOnCanvas( text, treat )
+  control = writeOnCanvas(text, control)
+  treat = writeOnCanvas(text, treat)
 
-  return !compareCanvases( treat, control )
+  return !compareCanvases(treat, control)
 }
-
-Locale.writeOnCanvas = writeOnCanvas
-Locale.compareCanvases = compareCanvases
-Locale.detectFont = detectFont
-
-return Locale
-})

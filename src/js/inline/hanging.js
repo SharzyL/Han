@@ -1,33 +1,30 @@
-define([
-  '../core',
-  '../method',
-  '../find'
-], function( Han, $ ) {
+import { Finder, createBDChar } from "../find";
+import $ from "../method"
+import { TYPESET } from "../regex";
+import { document, body } from "../vars";
 
-var HANGABLE_CLASS = 'bd-hangable'
-var HANGABLE_AVOID = 'h-char.bd-hangable'
-var HANGABLE_CS_HTML = '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
-
-var matches = Han.find.matches
+const HANGABLE_CLASS = 'bd-hangable'
+const HANGABLE_AVOID = 'h-char.bd-hangable'
+const HANGABLE_CS_HTML = '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
 
 function detectSpaceFont() {
   if (!document) return false
 
-  var div = $.create( 'div' )
-  var ret
+  const div = $.create('div');
+  let ret;
 
   div.innerHTML = '<span>a b</span><span style="font-family: \'Han Space\'">a b</span>'
-  body.appendChild( div )
+  body.appendChild(div)
   ret = div.firstChild.offsetWidth !== div.lastChild.offsetWidth
-  $.remove( div )
+  $.remove(div)
   return ret
 }
 
-function insertHangableCS( $jinze ) {
-  var $cs = $jinze.nextSibling
+function insertHangableCS($jinze) {
+  const $cs = $jinze.nextSibling;
 
-  if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
-    $cs.classList.add( 'hangable-outer' )
+  if ($cs && Finder.matches($cs, 'h-cs.jinze-outer')) {
+    $cs.classList.add('hangable-outer')
   } else {
     $jinze.insertAdjacentHTML(
       'afterend',
@@ -36,87 +33,48 @@ function insertHangableCS( $jinze ) {
   }
 }
 
-Han.support['han-space'] = detectSpaceFont()
+export const isSpaceFontLoaded = detectSpaceFont()
 
-$.extend( Han, {
-  detectSpaceFont:   detectSpaceFont,
-  isSpaceFontLoaded: detectSpaceFont(),
+export function renderHanging(context) {
+  context = context || document
+  const finder = new Finder(context);
 
-  renderHanging: function( context ) {
-    var context = context || document
-    var finder  = Han.find( context )
-
-    finder
-    .avoid( 'textarea, code, kbd, samp, pre' )
-    .avoid( HANGABLE_AVOID )
+  finder
+    .avoid('textarea, code, kbd, samp, pre')
+    .avoid(HANGABLE_AVOID)
     .replace(
       TYPESET.jinze.hanging,
-      function( portion ) {
-        if ( /^[\x20\t\r\n\f]+$/.test( portion.text )) {
+      function (portion) {
+        if (/^[\x20\t\r\n\f]+$/.test(portion.text)) {
           return ''
         }
 
-        var $elmt = portion.node.parentNode
-        var $jinze, $new, $bd, biaodian
+        const $elmt = portion.node.parentNode
+        let $new, $bd, biaodian
 
 
-        if ( $jinze = $.parent( $elmt, 'h-jinze' )) {
-          insertHangableCS( $jinze )
+        const $jinze = $.parent($elmt, 'h-jinze')
+        if ($jinze) {
+          insertHangableCS($jinze)
         }
 
         biaodian = portion.text.trim()
 
-        $new = Han.createBDChar( biaodian )
+        $new = createBDChar(biaodian)
         $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
-        $new.classList.add( HANGABLE_CLASS )
+        $new.classList.add(HANGABLE_CLASS)
 
-        $bd = $.parent( $elmt, 'h-char.biaodian' )
+        $bd = $.parent($elmt, 'h-char.biaodian')
 
-        return !$bd
-          ? $new
-          : (function() {
-            $bd.classList.add( HANGABLE_CLASS )
-
-            return matches( $elmt, 'h-inner, h-inner *' )
-              ? biaodian
-              : $new.firstChild
-          })()
+        if (!$bd) {
+          return $new
+        } else {
+          $bd.classList.add(HANGABLE_CLASS)
+          return Finder.matches($elmt, 'h-inner, h-inner *')
+            ? biaodian
+            : $new.firstChild
+        }
       }
     )
-    return finder
-  }
-})
-
-$.extend( Han.fn, {
-  renderHanging: function() {
-    var classList = this.condition.classList
-    Han.isSpaceFontLoaded = detectSpaceFont()
-
-    if (
-      Han.isSpaceFontLoaded &&
-      classList.contains( 'no-han-space' )
-    ) {
-      classList.remove( 'no-han-space' )
-      classList.add( 'han-space' )
-    }
-
-    Han.renderHanging( this.context )
-    return this
-  },
-
-  revertHanging: function() {
-    $.qsa(
-      'h-char.bd-hangable, h-cs.hangable-outer',
-      this.context
-    ).forEach(function( $elmt ) {
-      var classList = $elmt.classList
-      classList.remove( 'bd-hangable' )
-      classList.remove( 'hangable-outer' )
-    })
-    return this
-  }
-})
-
-return Han
-})
-
+  return finder
+}
