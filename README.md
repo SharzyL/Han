@@ -1,88 +1,27 @@
+# Han-CSS-Q
 
-- <b>中文</b>
-- [日本語](https://github.com/ethantw/Han/blob/master/README-ja.md)
-- [English](https://github.com/ethantw/Han/blob/master/README-en.md)
+「[汉字标准格式](https://github.com/ethantw/Han)」（以下简称 Han-CSS）是一个集「语意样式标准化」「文字设计」「高阶排版功能」三大概念的 Sass/Stylus、JavaScript 排版框架。其专为汉字网页提供的美观而标准化的环境，不仅符合传统阅读习惯、更为萤幕阅读提供了既成标准，得以完整解决现今汉字网页设计的排版需求。
 
+然而，Han-CSS 近年缺少维护，构建工具链停留在已经废弃的 gulp 版本，代码也不符合现代 JavaScript 编程惯例，功能上也不能满足现代前端的需求（例如服务器端渲染）。
 
-漢字標準格式
-==========
+本项目是 Han-CSS 的一个 fork，命名为 Han-CSS-Q，旨在提供 Han-CSS 的一个现代化版本。
 
-「漢字標準格式」是一個集「語意樣式標準化」「文字設計」「高階排版功能」三大概念的Sass/Stylus、JavaScript排版框架。其專為漢字網頁提供的美觀而標準化的環境，不僅符合傳統閱讀習慣、更為螢幕閱讀提供了既成標準，得以完整解決現今漢字網頁設計的排版需求。
+相对于 Han-CSS，本项目做了如下改动：
 
-「漢字標準格式」完整支援繁體中文、簡體中文及日文等三個採用漢字的語言文字。
+1. 抛弃原有的 gulp 构建工具链，全面使用 ES Module，可以使用包管理器直接导入到现代前端项目中。
+2. 支持服务器端渲染。
+3. 重新整理代码，使其基本符合现代 JavaScript 规范。
+4. 重新设计 API，使其更加易用。
 
-[檢視範例測試頁](http://ethantw.github.io/Han/latest/)
+目前本项目还处于开发阶段，功能基本可用，但是由于重构过程较为复杂，且还未经过完整测试，不保证和 Han-CSS 的结果一致。[sharzy.in](https://sharzy.in/blog) 已全面启用 Han-CSS-Q，效果可供参考。
 
-## 安裝
-- NPM `npm install --save han-css`
-- Bower `bower install --save Han`
-- Rails `gem install 'hanzi-rails'`（[詳細說明](https://github.com/billy3321/hanzi-rails)）
+## 使用方法
 
-### 定製
-「漢字標準格式」提供多項定製功能，可經由變數設定、模組引用等方式定製專屬的樣式表。詳情請見[使用手冊][api]。
+> 待补充
 
-[api]: http://css.hanzi.co/manual/sass-api
+```js
+import Han from "han-css"
 
-### 使用CDN文件
-若毋須特別定製，你也可以直接使用以預設値編譯的CDN外連樣式表、腳本及網頁字體，以求高速下載及快取。[此服務由cdnjs.com提供][cdnjs]。
-
-[cdnjs]: http://cdnjs.com/libraries/han
-
-````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.3.0/han.min.css">
-````
-
-腳本，
-
-````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.3.0/han.min.js"></script>
-````
-
-Web字體，
-
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.3.0/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.3.0/font/han.otf`
-
-## 使用方式
-
-1. 在網頁所有樣式表*前*引用經編譯的`han.min.css`（或使用Sass/Stylus匯入）。
-2. 依需求選用腳本`han.min.js`，並在`<html>`元素標籤上加入類別`han-init`以啓用DOM-ready渲染。
-3. 或依需求定製渲染方式，詳見[使用手冊][rendering]。
-
-[rendering]: http://css.hanzi.co/manual/js-api#rendering
-
-### 可選用的腳本
-「漢字標準格式」具低耦合、高度語意化等特性，樣式表與腳本各司其職、相互依賴性極低，並有多級樣式回退（fallback），故可依需求選用腳本。
-
-## 常見問題
-
-- [樣式的覆蓋](http://css.hanzi.co/manual/faq#yangshi_de_fugai)
-- [`han.js`腳本的運行環境](http://css.hanzi.co/manual/faq#han-js_de_yunxing_huanjing)
-
-## 瀏覽器支援
-
-- Chrome（最新版）
-- Edge（最新版）
-- Firefox（最新版）
-- Firefox ESR+
-- Internet Explorer 11
-- Opera（最新版）
-- Safari 9
-
-## 開發需求與指令
-
-- Node.js
-- LiveScript 1.4.0（`sudo npm install -g livescript`）
-
-下列清單展示了部分常用的開發指令，
-
-- 安裝需要的開發模組：`sudo npm install`
-- 啓動開發環境：`npm start`或`gulp dev`（包含本機運行及自動編譯）
-- 編譯發布文件：`gulp build`
-- 測試`han.js`API：`gulp test`（PhantomJS）
-- 更新依賴模組：`sudo npm update && gulp dep`
-
-* * *
-「漢字標準格式」版本：v3.3.0  
-本頁最後修改於：2016-3-19 00:11（UTC+8）
+new Han(document).render()
+```
 
