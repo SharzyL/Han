@@ -1,10 +1,10 @@
 {
-  "name": "han-css",
-  "version": "3.3.0",
-  "description": "The CSS typography framework optimised for Hanzi",
+  "name": "han-css-q",
+  "version": "0.1.0",
+  "description": "The CSS typography framework optimised for Hanzi, refactored as ESM",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ethantw/Han.git"
+    "url": "https://github.com/SharzyL/Han"
   },
   "main": "index.js",
   "keywords": [
@@ -18,11 +18,11 @@
     "name": "Chen Yijun (@ethantw)",
     "url": "http://yijun.me/"
   },
+  "contributors": [
+    { "name": "Sharzy", "email": "me@sharzy.in" }
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ethantw/Han/issues"
-  },
-  "dependencies": {
-    "normalize.css": "^8.0.1"
+    "url": "https://github.com/SharzyL/Han/issues"
   }
 }
