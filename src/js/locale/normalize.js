@@ -46,7 +46,7 @@ export function renderDecoLine(context, target) {
 
 // Traverse all target elements to render
 // emphasis marks.
-function renderEm(context, target) {
+export function renderEm(context, target) {
   const method = target ? 'qsa' : 'tag'
   target = target || 'em'
   const $target = $[method](target, context)

@@ -5,6 +5,8 @@ import { renderJiya, revertJiya } from "./inline/jiya";
 import { initCond } from "./locale/init-cond";
 import { renderElem } from "./locale/normalize";
 import { renderHWS, renderHWSStrict } from "./inline/hws";
+import { renderRuby } from "./locale/h-ruby";
+import { renderDecoLine, renderEm } from "./locale/normalize";
 import { substCombLigaWithPUA } from "./inline/subst";
 
 const VERSION = '@VERSION'
@@ -42,7 +44,7 @@ export default class Han {
 
   static allSteps = {
     initCond,
-    renderElem,
+    renderElem, renderRuby, renderDecoLine, renderEm,
     renderJiya, revertJiya,
     renderHanging,
     correctBiaodian,
@@ -71,7 +73,7 @@ export default class Han {
     (routine || this.routine).forEach(method => {
       const step = Han.allSteps[method]
       if (step === undefined) {
-        console.error(`cannot find step of name '${method}'`)
+        throw Error(`cannot find step of name '${method}'`)
       } else {
         step(this.context)
       }
