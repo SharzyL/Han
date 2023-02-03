@@ -37,7 +37,7 @@ Han-CSS-Q 的 CSS 使用 SASS/SCSS 编写，配置打包器对应的 SASS loader
 > 1. 让打包器相对当前目录解析文件，例如对于 webpack，可以使用 [resolve-url-loader](https://github.com/bholloway/resolve-url-loader) 这一加载器。
 > 2. 通过 SASS 变量 `$han-font-path` 来指定字体路径。例如，如果入口文件为 `src/style/main.sass`，那么可以设定（设定方法见下文）：
 > ```sass
-> $han-font-path: "../../node_modules/han-css-q/font"
+> $han-font-path: "../../node_modules/han-css-q/font/"
 > ```
 
 Han-CSS-Q 的 SASS 提供了若干变量可供定制化，可以通过在 `@import` 语句之前定义这些变量来完成定制：
