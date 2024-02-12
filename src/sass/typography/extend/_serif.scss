@@ -49,6 +49,7 @@
 %han-serif-ja {
   font-family:
     'Yakumono Serif',
+    'Noto Serif CJK JP',
     'Numeral LF Serif',
     $han-serif,
     serif
@@ -56,7 +57,7 @@
 }
 
 %han-serif-ja-nu {
-  font-family: 'Numeral LF Serif', $han-serif, serif;
+  font-family: 'Noto Serif CJK JP', 'Numeral LF Serif', $han-serif, serif;
 }
 
 /**
@@ -117,6 +118,7 @@
 %han-serif-italic-ja {
   font-family:
     'Yakumono Serif',
+    'Noto Serif CJK JP',
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
     $han-serif,
@@ -125,6 +127,6 @@
 }
 
 %han-serif-italic-ja-nu {
-  font-family: 'Numeral LF Italic Serif', 'Latin Italic Serif', $han-serif, cursive, serif;
+  font-family: 'Noto Serif CJK JP', 'Numeral LF Italic Serif', 'Latin Italic Serif', $han-serif, cursive, serif;
 }
 

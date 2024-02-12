@@ -49,6 +49,7 @@
 %han-cursive-ja {
   font-family:
     'Yakumono Serif',
+    'Noto Serif CJK JP',
     'Numeral LF Serif',
     $han-serif,
     cursive, serif
@@ -56,7 +57,7 @@
 }
 
 %han-cursive-ja-nu {
-  font-family: 'Numeral LF Serif', $han-serif, cursive, serif;
+  font-family: 'Numeral LF Serif', 'Noto Serif CJK JP', $han-serif, cursive, serif;
 }
 
 /**
