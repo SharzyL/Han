@@ -21,7 +21,9 @@ export class Fibre {
   }
 
   static matches(node, selector) {
-    return node.matches(selector)
+    if (node.matches) {  // comment element may not have .matches()
+      return node.matches(selector)
+    }
   }
 
   init(context, noPreset) {
